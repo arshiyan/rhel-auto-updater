@@ -2,7 +2,8 @@
 
 # ==============================================================================
 # Project:      rhel-auto-updater
-# Description:  A non-interactive script to install and configure dnf-automatic#               for applying security updates on RHEL-based systems.
+# Description:  A non-interactive script to install and configure dnf-automatic
+#               for applying security updates on RHEL-based systems.
 #
 # Author:       Mohammad Javad Arshiyan
 # GitHub:       https://github.com/arshiyan/rhel-auto-updater
@@ -15,7 +16,9 @@
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
-NC='\033[0m' # No Color# --- Check for Root Privileges ---
+NC='\033[0m' # No Color
+
+# --- Check for Root Privileges ---
 if [ "$(id -u)" -ne 0 ]; then
   echo -e "${RED}Error: This script must be run as root. Please use 'sudo' or run as the root user.${NC}"
   exit 1
@@ -42,11 +45,13 @@ if [ -f "$CONFIG_FILE" ]; then
 fi
 
 # Set upgrade_type to security
-sed -i 's/^\(upgrade_type\s*=\s*\).*/\1security/' $CONFIG_FILE# Set apply_updates to yes
+sed -i 's/^\(upgrade_type\s*=\s*\).*/\1security/' $CONFIG_FILE
+
+# Set apply_updates to yes
 sed -i 's/^\(apply_updates\s*=\s*\).*/\1yes/' $CONFIG_FILE
 
-echo "Configuration file '$CONFIG_FILE' updated."echo -e "${YELLOW}Note: To receive email notifications, manually edit the [email] section in ${CONFIG_FILE}.${NC}"
-
+echo "Configuration file '$CONFIG_FILE' updated."
+echo -e "${YELLOW}Note: To receive email notifications, manually edit the [email] section in ${CONFIG_FILE}.${NC}"    
 # --- Step 3: Enable and Start the Systemd Timer ---
 echo -e "\n${GREEN}Step 3: Enabling and starting the dnf-automatic timer...${NC}"
 systemctl enable --now dnf-automatic.timer
