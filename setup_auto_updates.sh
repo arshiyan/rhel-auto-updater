@@ -8,7 +8,7 @@
 #
 # Author:       Mohammad Javad Arshiyan
 # GitHub:       https://github.com/arshiyan/rhel-auto-updater
-# Version:      1.0.0
+# Version:      1.0.1
 # License:      MIT License
 # Date:         July 19, 2025
 # ==============================================================================
@@ -28,15 +28,26 @@ fi
 # --- Confirmation Prompt ---
 echo -e "${YELLOW}This script will install and configure 'dnf-automatic' to apply SECURITY updates automatically every day.${NC}"
 read -p "Do you want to continue? (y/n): " choice
+
 case "$choice" in
-  y|Y ) echo "Starting setup...";;
-  n|N ) echo "Operation cancelled."; exit 0;;  * ) echo "Invalid input. Operation cancelled."; exit 1;;
+  y|Y)
+    echo "Starting setup..."
+    ;;
+  n|N)
+    echo "Operation cancelled."
+    exit 0
+    ;;
+  *)
+    echo "Invalid input. Operation cancelled."
+    exit 1
+    ;;
 esac
 
 # --- Step 1: Install dnf-automatic ---
 echo -e "\n${GREEN}Step 1: Installing dnf-automatic...${NC}"
 dnf install -y dnf-automatic
-if [ $? -ne 0 ]; then    echo -e "${RED}Error: Failed to install dnf-automatic. Please check your dnf configuration and network.${NC}"
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Error: Failed to install dnf-automatic. Please check your dnf configuration and network.${NC}"
     exit 1
 fi
 echo "Package 'dnf-automatic' installed successfully."
@@ -46,7 +57,9 @@ echo -e "\n${GREEN}Step 2: Configuring for automatic security updates...${NC}"
 CONFIG_FILE="/etc/dnf/automatic.conf"
 
 # Backup the original config file just in case
-cp "$CONFIG_FILE" "$CONFIG_FILE.bak"
+if [ -f "$CONFIG_FILE" ]; then
+    cp "$CONFIG_FILE" "$CONFIG_FILE.bak_$(date +%F)"
+fi
 
 # Set upgrade_type to security
 sed -i 's/^\(upgrade_type\s*=\s*\).*/\1security/' $CONFIG_FILE
@@ -70,7 +83,7 @@ echo -e "\n${GREEN}=====================================================${NC}"
 echo -e "${GREEN}      ✅ Automatic Security Updates Enabled!          ${NC}"
 echo -e "${GREEN}=====================================================${NC}"
 echo "Your system is now configured to automatically install security updates daily."
-echo "You can check the status of the timer anytime with the command:"
+echo "To check the timer status, run:"
 echo -e "${YELLOW}systemctl status dnf-automatic.timer${NC}"
 
 exit 0
