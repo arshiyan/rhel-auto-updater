@@ -51,7 +51,8 @@ sed -i 's/^\(upgrade_type\s*=\s*\).*/\1security/' $CONFIG_FILE
 sed -i 's/^\(apply_updates\s*=\s*\).*/\1yes/' $CONFIG_FILE
 
 echo "Configuration file '$CONFIG_FILE' updated."
-echo -e "${YELLOW}Note: To receive email notifications, manually edit the [email] section in ${CONFIG_FILE}.${NC}"    
+echo -e "${YELLOW}Note: To receive email notifications, manually edit the [email] section in ${CONFIG_FILE}.${NC}"
+
 # --- Step 3: Enable and Start the Systemd Timer ---
 echo -e "\n${GREEN}Step 3: Enabling and starting the dnf-automatic timer...${NC}"
 systemctl enable --now dnf-automatic.timer
